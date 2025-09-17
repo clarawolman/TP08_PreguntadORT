@@ -17,4 +17,14 @@ public class HomeController : Controller
     {
         return View();
     }
+    public IActionResult ConfigurarJuego() {
+        return View();
+    }
+    public IActionResult Comenzar(string username, int dificultad, int categoria) {
+        Juego.CargarPartida(username, dificultad, categoria);
+        return RedirectToAction(Jugar);
+    }
+    public IActionResult Jugar() {
+        
+    }
 }

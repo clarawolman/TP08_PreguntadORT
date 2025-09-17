@@ -18,5 +18,15 @@ public class Juego
         listaPreguntas = null;
         listaRespuestas = null;
     }
+    public List<Categoria> ObtenerCategorias() {
+
+    }
+    public List<Dificultad> ObtenerDificultades() {
+        
+    }
+    public void CargarPartida(string username, int dificultad, int categoria) {
+        InicializarJuego();
+        
+    }
 
 }
