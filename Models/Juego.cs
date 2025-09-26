@@ -21,17 +21,22 @@ public class Juego
         listaRespuestas = null;
     }
     public List<Categoria> ObtenerCategorias() {
-        
+        return ObtenerCategorias();
     }
     public List<Dificultad> ObtenerDificultades() {
-        
+        return ObtenerDificultades();   
     }
     public void CargarPartida(string usuario, int dificultad, int categoria) {
         username = usuario;
         BD.ObtenerPreguntas(dificultad, categoria);
     }
     public void ObtenerProximaPregunta() {
-        //Retorna la siguiente pregunta de la lista de preguntas del juego.
+        int preguntaID = preguntaActual.PreguntaID + 1;
+        using (SqlConnection db = new SqlConnection(_connectionString))
+        {
+            string sql = "SELECT * FROM Pregunta WHERE Pregunta.IdDificultad = @dificultad and Pregunta.IdCategoria = @categoria and Pregunta.IdPregunta = @preguntaID";
+            return db.Query<Pregunta>(sql).AsList();
+        }
     }
     public void ObtenerProximasRespuestas(int idPregunta) {
         using (SqlConnection db = new SqlConnection(_connectionString))

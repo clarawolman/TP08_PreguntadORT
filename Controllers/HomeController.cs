@@ -28,7 +28,9 @@ public class HomeController : Controller
         ViewBag.preguntaActual = juegoNuevo.Algo();
         ViewBag.listaRespuestas = juegoNuevo.Algo();
         if(/*si hay mas preguntas va a lo de respuesta, si no dice "fin"*/)
-        ViewBag.respuestaCorrecta = juegoNuevo.Algo(); //???
-        
+        {
+            
+        }
+        ViewBag.respuestaCorrecta = juegoNuevo.Algo(); //???        
     }
 }
