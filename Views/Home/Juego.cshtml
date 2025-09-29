@@ -1,0 +1,111 @@
+@model TuProyecto.Models.Juego
+
+@{
+    ViewData["Title"] = "Juego en Progreso";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+
+            <!-- Datos del jugador -->
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title">Jugador: <strong>@ViewBag.username</strong></h4>
+                    <p class="card-text">Puntaje actual: <strong>@ViewBag.puntajeActual</strong></p>
+                </div>
+            </div>
+
+            <!-- Pregunta -->
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        Pregunta @(@ViewBag.contadorNroPreguntaActual + 1): 
+                        @ViewBag.preguntaActual.Texto
+                    </h5>
+
+                    @* Mostrar foto si la pregunta la tiene *@
+                    @if (!string.IsNullOrEmpty(ViewBag.preguntaActual.ImagenURL))
+                    {
+                        <div class="text-center my-3">
+                            <img src="@ViewBag.preguntaActual.ImagenURL" alt="Imagen de la pregunta" class="img-fluid rounded" />
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Opciones de respuesta -->
+            <form asp-action="VerificarRespuesta" method="post">
+                <input type="hidden" name="preguntaId" value="@ViewBag.preguntaActual.PreguntaID" />
+
+                <div class="row">
+                    @foreach (var respuesta in ViewBag.listaRespuestas)
+                    {
+                        <div class="col-6 mb-3">
+                            <button type="submit" name="idRespuesta" value="@respuesta.RespuestaID" 
+                                    class="btn btn-outline-primary w-100 p-3 text-start">
+                                
+                                @* Si la respuesta tiene foto, la mostramos *@
+                                @if (!string.IsNullOrEmpty(respuesta.ImagenURL))
+                                {
+                                    <img src="@respuesta.ImagenURL" alt="Opción" class="img-fluid mb-2 rounded" />
+                                }
+
+                                @respuesta.Texto
+                            </button>
+                        </div>
+                    }
+                </div>
+            </form>
+
+            <!-- Ruleta de categorías (opcional bonus) -->
+            <div class="card mt-4 shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Ruleta de Categorías 🎡</h5>
+                    <canvas id="ruleta" width="300" height="300"></canvas>
+                    <br />
+                    <button id="girarBtn" class="btn btn-success mt-3">Girar Ruleta</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Ejemplo simple de ruleta con Canvas
+        const categorias = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Categorias));
+        const canvas = document.getElementById("ruleta");
+        const ctx = canvas.getContext("2d");
+        const total = categorias.length;
+        const angle = (2 * Math.PI) / total;
+
+        function dibujarRuleta() {
+            for (let i = 0; i < total; i++) {
+                ctx.beginPath();
+                ctx.moveTo(150, 150);
+                ctx.arc(150, 150, 150, i * angle, (i + 1) * angle);
+                ctx.fillStyle = i % 2 === 0 ? "#f8c291" : "#82ccdd";
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.save();
+                ctx.translate(150, 150);
+                ctx.rotate(i * angle + angle / 2);
+                ctx.textAlign = "right";
+                ctx.fillStyle = "#000";
+                ctx.font = "14px Arial";
+                ctx.fillText(categorias[i].Nombre, 140, 5);
+                ctx.restore();
+            }
+        }
+
+        dibujarRuleta();
+
+        document.getElementById("girarBtn").addEventListener("click", () => {
+            let giro = Math.floor(Math.random() * total);
+            alert("¡La categoría seleccionada es: " + categorias[giro].Nombre + "!");
+        });
+    </script>
+}

@@ -46,14 +46,30 @@ public class Juego
         }
     }
     public bool VerificarRespuesta(int idRespuesta) {
-        //Si la respuesta del usuario fue correcta, suma una cantidad específica de puntos a PuntajeActual (la definen ustedes) y suma 1 respuesta correcta en CantidadPreguntasCorrectas.
-        //Independientemente de que este bien o mal la respuesta, Incrementa el contador de ContadorNroPreguntaActual y asigna la siguiente pregunta de la ListaPreguntas a PreguntaActual.
-        listaRespuestas = ObtenerProximasRespuestas();
         using (SqlConnection db = new SqlConnection(_connectionString))
         {
-            string sql = "SELECT EsCorrecta FROM Respuesta WHERE Respuesta.RespuestaId = @idRespuesta";
+            bool sql = "SELECT EsCorrecta FROM Respuesta WHERE Respuesta.RespuestaId = @idRespuesta";
             return db.Query<Respuesta>(sql);
         }
+        if(sql)
+        {
+            switch(preguntaActual.DificultadID)
+            {
+                case 1:
+                puntajeActual++;
+                break;
+                case 2:
+                puntajeActual+=2;
+                break;
+                case 3:
+                puntajeActual+=3;
+                break;
+            }
+            cantidadPreguntasCorrectas++;
+        }
+        contadorNroPreguntaActual++;
+        preguntaActual = ObtenerProximaPregunta();
+
     }
 
 }

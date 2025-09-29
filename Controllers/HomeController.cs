@@ -17,20 +17,30 @@ public class HomeController : Controller
     {
         return View();
     }
-    public IActionResult ConfigurarJuego() {
+    public IActionResult ConfigurarJuego()
+    {
+        ViewBag.Dificultades = BD.ObtenerDificultades();
+        ViewBag.Categorias = BD.ObtenerCategorias();
         return View();
     }
-    public IActionResult Comenzar(string username, int dificultad, int categoria) {
+    public IActionResult Comenzar(string username, int dificultad, int categoria)
+    {
         juegoNuevo.CargarPartida(username, dificultad, categoria);
         return RedirectToAction(Jugar);
     }
-    public IActionResult Jugar() {
+    public IActionResult Jugar()
+    {
         ViewBag.preguntaActual = juegoNuevo.Algo();
         ViewBag.listaRespuestas = juegoNuevo.Algo();
-        if(/*si hay mas preguntas va a lo de respuesta, si no dice "fin"*/)
+        if (/*si hay mas preguntas va a lo de respuesta, si no dice "fin"*/)
         {
-            
+
         }
         ViewBag.respuestaCorrecta = juegoNuevo.Algo(); //???        
+    }
+    public IActionResult Juego()
+    { // eu increible lo poco que entiendo
+        
+        return View();
     }
 }
