@@ -3,7 +3,11 @@ using Microsoft.Data.SqlClient;
 using Dapper;
 using System.Collections.Generic;
 
-public class Categoria{
-    int CategoriaID;
-    string Nombre;
+namespace TP08_PreguntadORT.Models
+{
+    public class Categoria
+    {
+        public int CategoriaID { get; set; }
+        public string Nombre { get; set; }
+    }
 }

@@ -1,4 +1,4 @@
-@model TuProyecto.Models.Juego
+@model TP08_PreguntadORT.Models.Juego
 
 @{
     ViewData["Title"] = "Juego en Progreso";
@@ -75,7 +75,7 @@
 @section Scripts {
     <script>
         // Ejemplo simple de ruleta con Canvas
-        const categorias = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Categorias));
+        const categorias = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Categorias));
         const canvas = document.getElementById("ruleta");
         const ctx = canvas.getContext("2d");
         const total = categorias.length;

@@ -1,7 +1,11 @@
 using Microsoft.Data.SqlClient;
 using Dapper;
-public class Juego
+
+namespace TP08_PreguntadORT.Models
 {
+    public class Juego
+{
+    private string _connectionString = "Server=.;Database=preguntadORT;Trusted_Connection=True;TrustServerCertificate=True;";
     public string username { get; set; }
     public int puntajeActual { get; set; }
     public int cantidadPreguntasCorrectas { get; set; }
@@ -21,37 +25,54 @@ public class Juego
         listaRespuestas = null;
     }
     public List<Categoria> ObtenerCategorias() {
-        return ObtenerCategorias();
+        return BD.ObtenerCategorias();
     }
     public List<Dificultad> ObtenerDificultades() {
-        return ObtenerDificultades();   
+        return BD.ObtenerDificultades();   
     }
     public void CargarPartida(string usuario, int dificultad, int categoria) {
         username = usuario;
-        BD.ObtenerPreguntas(dificultad, categoria);
-    }
-    public void ObtenerProximaPregunta() {
-        int preguntaID = preguntaActual.PreguntaID + 1;
-        using (SqlConnection db = new SqlConnection(_connectionString))
+        listaPreguntas = BD.ObtenerPreguntas(dificultad, categoria);
+        if (listaPreguntas != null && listaPreguntas.Count > 0)
         {
-            string sql = "SELECT * FROM Pregunta WHERE Pregunta.IdDificultad = @dificultad and Pregunta.IdCategoria = @categoria and Pregunta.IdPregunta = @preguntaID";
-            return db.Query<Pregunta>(sql).AsList();
+            preguntaActual = listaPreguntas[0];
+            listaRespuestas = BD.ObtenerRespuestas(preguntaActual.PreguntaID);
         }
     }
-    public void ObtenerProximasRespuestas(int idPregunta) {
+    public void SeleccionarPreguntaPorIndice(int indice)
+    {
+        if (listaPreguntas == null || listaPreguntas.Count == 0) return;
+        if (indice < 0 || indice >= listaPreguntas.Count) return;
+        contadorNroPreguntaActual = indice;
+        preguntaActual = listaPreguntas[indice];
+        listaRespuestas = ObtenerProximasRespuestas(preguntaActual.PreguntaID);
+    }
+    public Pregunta ObtenerProximaPregunta() {
+        if (listaPreguntas == null || listaPreguntas.Count == 0) return null;
+        int currentIndex = listaPreguntas.FindIndex(p => p.PreguntaID == (preguntaActual?.PreguntaID ?? -1));
+        int nextIndex = currentIndex + 1;
+        if (nextIndex >= 0 && nextIndex < listaPreguntas.Count)
+        {
+            return listaPreguntas[nextIndex];
+        }
+        return null;
+    }
+    public List<Respuesta> ObtenerProximasRespuestas(int idPregunta) {
         using (SqlConnection db = new SqlConnection(_connectionString))
         {
-            string sql = "SELECT * FROM Respuesta WHERE Respuesta.IdPregunta = @idPregunta";
-            return db.Query<Respuesta>(sql).AsList();
+            string sql = "SELECT * FROM Respuesta WHERE PreguntaID = @idPregunta ORDER BY RespuestaID";
+            return db.Query<Respuesta>(sql, new { idPregunta }).ToList();
         }
     }
     public bool VerificarRespuesta(int idRespuesta) {
+        bool esCorrecta = false;
         using (SqlConnection db = new SqlConnection(_connectionString))
         {
-            bool sql = "SELECT EsCorrecta FROM Respuesta WHERE Respuesta.RespuestaId = @idRespuesta";
-            return db.Query<Respuesta>(sql);
+            string sql = "SELECT EsCorrecta FROM Respuesta WHERE RespuestaID = @idRespuesta";
+            esCorrecta = db.QuerySingleOrDefault<bool>(sql, new { idRespuesta });
         }
-        if(sql)
+        
+        if(esCorrecta)
         {
             switch(preguntaActual.DificultadID)
             {
@@ -69,7 +90,11 @@ public class Juego
         }
         contadorNroPreguntaActual++;
         preguntaActual = ObtenerProximaPregunta();
-
+        if (preguntaActual != null)
+        {
+            listaRespuestas = ObtenerProximasRespuestas(preguntaActual.PreguntaID);
+        }
+        return esCorrecta;
     }
-
+    }
 }

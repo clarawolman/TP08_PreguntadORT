@@ -3,7 +3,11 @@ using Microsoft.Data.SqlClient;
 using Dapper;
 using System.Collections.Generic;
 
-public class Dificultad{
-    int DificultadID;
-    string Nombre;
+namespace TP08_PreguntadORT.Models
+{
+    public class Dificultad
+    {
+        public int DificultadID { get; set; }
+        public string Nombre { get; set; }
+    }
 }

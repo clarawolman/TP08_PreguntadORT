@@ -1,9 +1,9 @@
-@model TuProyecto.Models.Juego
+@model TP08_PreguntadORT.Models.Juego
 @{
     ViewData["Title"] = "Configurar Juego";
     // Las listas de dificultades y categorías deberían cargarse en el ViewBag desde el controller
-    var dificultades = ViewBag.Dificultades as List<Dificultad>;
-    var categorias = ViewBag.Categorias as List<Categoria>;
+    var dificultades = ViewBag.Dificultades as List<TP08_PreguntadORT.Models.Dificultad>;
+    var categorias = ViewBag.Categorias as List<TP08_PreguntadORT.Models.Categoria>;
 }
 
 <h2>Configurar Juego</h2>

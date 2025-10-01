@@ -1,113 +1,430 @@
-﻿<!doctype html>
-<html lang = "es">
+﻿@{
+    ViewData["Title"] = "PreguntadORT - ¡Comienza tu aventura!";
+}
+
+<!DOCTYPE html>
+<html lang="es">
 <head>
-  <meta charset = "utf-8"/>
-  <meta name = "viewport" content = "width=device-width,initial-scale=1"/>
-  <title > PreguntadORT — Inicio </title >
-  <script src = "https://cdn.tailwindcss.com"></script>
-  <link rel = "stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-  <script src = "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" ></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-  <style>
-    body {
-        background: linear - gradient(270deg, #ff4d6d, #f9cb28, #4ade80, #3b82f6, #a855f7);
-        background - size: 1200 % 1200 %;
-        animation: gradientMove 20s ease infinite;
-        min - height: 100vh;
-        font - family: 'Poppins', sans - serif;
-        display: flex;
-        justify - content: center;
-        align - items: center;
-        padding: 20px;
-    }
-    @@keyframes gradientMove
-    {
-      0% { background - position:0 % 50 %}
-      50% { background - position:100 % 50 %}
-      100% { background - position:0 % 50 %}
-    }
-    .ruleta {
-        width: 280px;
-        height: 280px;
-        border - radius: 50 %;
-        border: 10px solid white;
-        position: relative;
-        overflow: hidden;
-        box - shadow: 0 0 25px rgba(255,255,255,0.6);
-    }
-    .ruleta span
-    {
-    position: absolute;
-    width: 50%;
-    height: 50%;
-    transform-origin: 100% 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    color: white;
-    font-size: 14px;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.4);
-    }
-  </style>
-    </head>
-    <body>
-  <main class= "w-full max-w-5xl mx-auto grid lg:grid-cols-2 gap-12 items-center text-center lg:text-left">
-    <section class= "space-y-6 animate__animated animate__fadeInLeft">
-      <h1 class= "text-5xl font-extrabold text-white drop-shadow-lg">🎉 PreguntadORT </h1>
-      <p class= "text-xl text-white/90 font-medium" > El juego de preguntas más divertido. <br> ¡Elige categoría y dificultad para empezar ya!</p>
-      <img src="https://cdn-icons-png.flaticon.com/512/4447/4447968.png"
-           alt="Trivia ilustración"
-           class= "w-64 mx-auto lg:mx-0 animate__animated animate__bounceIn animate__delay-1s">
-    </section>
+        .game-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            margin: 20px auto;
+            max-width: 1200px;
+        }
 
-    <section class= "bg-white/20 backdrop-blur-lg rounded-3xl shadow-2xl p-8 space-y-6 animate__animated animate__fadeInRight">
+        .title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
 
-      <div class= "flex justify-center">
-        <div class= "ruleta" id = "ruleta">
-          <span style = "transform: rotate(0deg) translate(70%, -70%); background:#ef4444;" >🐾 Animales </span>
-          <span style = "transform: rotate(72deg) translate(70%, -70%); background:#f97316;" >📚 Sociales </span>
-          <span style = "transform: rotate(144deg) translate(70%, -70%); background:#22c55e;" >⚽ Deportes </span>
-          <span style = "transform: rotate(216deg) translate(70%, -70%); background:#3b82f6;" >➗ Matemática </span>
-          <span style = "transform: rotate(288deg) translate(70%, -70%); background:#a855f7;" >🎬 Cine & Música </span>
+        .title h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+        }
+
+        .title p {
+            font-size: 1.2rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .game-setup {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .difficulty-section {
+            text-align: center;
+        }
+
+        .difficulty-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .difficulty-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .difficulty-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .difficulty-btn.active {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .difficulty-easy {
+            background: linear-gradient(45deg, #56ab2f, #a8e6cf);
+            color: white;
+        }
+
+        .difficulty-medium {
+            background: linear-gradient(45deg, #f7971e, #ffd200);
+            color: white;
+        }
+
+        .difficulty-hard {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white;
+        }
+
+        .wheel-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .wheel {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            position: relative;
+            border: 8px solid #fff;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+            transition: transform 4s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+        }
+
+        .wheel-section {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform-origin: 100% 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 12px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 30px solid #ff4757;
+            z-index: 10;
+        }
+
+        .spin-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .spin-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        .spin-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .category-display {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 15px;
+            color: white;
+            margin-top: 20px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .start-game-section {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .username-input {
+            margin-bottom: 20px;
+        }
+
+        .username-input input {
+            padding: 15px 25px;
+            border: 2px solid #ddd;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            width: 300px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .username-input input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .start-game-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            padding: 18px 50px;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .start-game-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .start-game-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        @@media (max-width: 768px) {
+            .game-setup {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .title h1 {
+                font-size: 2.5rem;
+            }
+
+            .wheel {
+                width: 250px;
+                height: 250px;
+            }
+
+            .username-input input {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        .spinning {
+            animation: spin 4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        @@keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(var(--spin-rotation, 1800deg)); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="game-container">
+            <div class="title">
+                <h1><i class="fas fa-brain"></i> PreguntadORT</h1>
+                <p>¡El juego de preguntas más emocionante! Elige tu dificultad y gira la ruleta</p>
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        <i class="fas fa-exclamation-triangle"></i> @ViewBag.Error
+                    </div>
+                }
+            </div>
+
+            <div class="game-setup">
+                <!-- Sección de Dificultad -->
+                <div class="difficulty-section">
+                    <h3 class="mb-4"><i class="fas fa-signal"></i> Selecciona la Dificultad</h3>
+                    <div class="difficulty-options">
+                        <button class="difficulty-btn difficulty-easy" data-difficulty="1">
+                            <i class="fas fa-leaf"></i> Fácil
+                        </button>
+                        <button class="difficulty-btn difficulty-medium" data-difficulty="2">
+                            <i class="fas fa-fire"></i> Media
+                        </button>
+                        <button class="difficulty-btn difficulty-hard" data-difficulty="3">
+                            <i class="fas fa-skull"></i> Difícil
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sección de Ruleta -->
+                <div class="wheel-container">
+                    <h3 class="mb-4"><i class="fas fa-circle-notch"></i> Gira la Ruleta</h3>
+                    <div class="wheel" id="wheel">
+                        <div class="wheel-pointer"></div>
+                        @{
+                            var categoriasDb = ViewBag.Categorias as List<TP08_PreguntadORT.Models.Categoria>;
+                            var colors = new[] { "#ff6b6b", "#4ecdc4", "#45b7d1", "#96ceb4", "#feca57", "#ff9ff3", "#54a0ff", "#5f27cd" };
+                            int total = categoriasDb.Count;
+                            double angleStep = total > 0 ? 360.0 / total : 0;
+                        }
+                        @for (int i = 0; i < (ViewBag.Categorias as List<TP08_PreguntadORT.Models.Categoria>).Count; i++)
+                        {
+                            <div class="wheel-section" style="background-color: @colors[i % colors.Length]; transform: rotate(@(i * angleStep)deg) translate(70%, -70%);">
+                                <div style="transform: rotate(@(90 - i * angleStep)deg);">
+                                    @((ViewBag.Categorias as List<TP08_PreguntadORT.Models.Categoria>)[i].Nombre)
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <button class="spin-btn" id="spinBtn" disabled>
+                        <i class="fas fa-play"></i> ¡Girar Ruleta!
+                    </button>
+                    <div class="category-display" id="categoryDisplay">
+                        Selecciona una dificultad y gira la ruleta
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección para comenzar el juego -->
+            <div class="start-game-section">
+                <div class="username-input">
+                    <input type="text" id="username" placeholder="Ingresa tu nombre de usuario" maxlength="20">
+                </div>
+                <form id="gameForm" asp-action="Comenzar" method="post" style="display: none;">
+                    <input type="hidden" id="selectedDifficulty" name="dificultad" value="">
+                    <input type="hidden" id="selectedCategory" name="categoriaSeleccionada" value="">
+                    <input type="hidden" id="usernameInput" name="username" value="">
+                    <button type="submit" class="start-game-btn" id="startGameBtn">
+                        <i class="fas fa-rocket"></i> ¡Comenzar Juego!
+                    </button>
+                </form>
+            </div>
         </div>
-      </div>
+    </div>
 
-      <form class= "space-y-4 text-white font-semibold" onsubmit = "return false;">
-        <div>
-          <label class= "block mb-1" > Categoría </label>
-          <select class= "w-full px-4 py-3 rounded-xl bg-white/30 border-2 border-white/40 focus:outline-none focus:ring-4 focus:ring-emerald-400 text-black font-medium">
-            <option> Todas </option>
-            <option> Animales </option>
-            <option> Ciencias Sociales </option>
-            <option> Deportes </option>
-            <option> Matemática </option>
-            <option> Cine y Música</option>
-          </select>
-        </div>
-        <div>
-          <label class= "block mb-1" > Dificultad </label>
-          <select class= "w-full px-4 py-3 rounded-xl bg-white/30 border-2 border-white/40 focus:outline-none focus:ring-4 focus:ring-emerald-400 text-black font-medium" >
-            <option> Fácil </option>
-            <option> Media </option>
-            <option> Difícil </option>
-          </select>
-        </div>
-        <button href ="juego.cshtml" class= "w-full py-4 text-xl bg-gradient-to-r from-pink-500 via-yellow-400 to-green-400 rounded-2xl font-extrabold text-black shadow-lg hover:scale-105 transform transition" >🚀 ¡Comenzar! </button>
-      </form>
-    </section>
-  </main >
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let selectedDifficulty = null;
+        let selectedCategory = null;
+        let isSpinning = false;
 
+        const categorias = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Categorias));
 
-  <script>
-    gsap.to("#ruleta", {
-        rotation: 360,
-      repeat: -1,
-      duration: 25,
-      ease: "linear"
-    });
-  </script>
+        // Manejo de selección de dificultad
+        document.querySelectorAll('.difficulty-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedDifficulty = parseInt(this.dataset.difficulty);
+                document.getElementById('spinBtn').disabled = false;
+                updateCategoryDisplay();
+            });
+        });
+
+        // Manejo del giro de la ruleta
+        document.getElementById('spinBtn').addEventListener('click', function() {
+            if (isSpinning) return;
+            
+            isSpinning = true;
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Girando...';
+
+            const wheel = document.getElementById('wheel');
+            const spinRotation = 1800 + Math.random() * 1800; // Entre 5 y 10 vueltas
+            wheel.style.setProperty('--spin-rotation', spinRotation + 'deg');
+            wheel.classList.add('spinning');
+
+            setTimeout(() => {
+                const finalAngle = spinRotation % 360;
+                const sectionAngle = 360 / categorias.length;
+                const selectedIndex = Math.floor((360 - finalAngle) / sectionAngle) % categorias.length;
+                
+                selectedCategory = categorias[selectedIndex].CategoriaID;
+                
+                document.getElementById('categoryDisplay').innerHTML = 
+                    `🎯 Categoría seleccionada: <strong>${categorias[selectedIndex].Nombre}</strong>`;
+                
+                wheel.classList.remove('spinning');
+                isSpinning = false;
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-play"></i> ¡Girar Ruleta!';
+                
+                updateGameForm();
+            }, 4000);
+        });
+
+        // Manejo del nombre de usuario
+        document.getElementById('username').addEventListener('input', function() {
+            updateGameForm();
+        });
+
+        function updateGameForm() {
+            const username = document.getElementById('username').value.trim();
+            const form = document.getElementById('gameForm');
+            
+            if (selectedDifficulty && selectedCategory && username) {
+                document.getElementById('selectedDifficulty').value = selectedDifficulty;
+                document.getElementById('selectedCategory').value = selectedCategory;
+                document.getElementById('usernameInput').value = username;
+                form.style.display = 'block';
+            } else {
+                form.style.display = 'none';
+            }
+        }
+
+        function updateCategoryDisplay() {
+            if (selectedDifficulty) {
+                const difficultyNames = { 1: 'Fácil', 2: 'Media', 3: 'Difícil' };
+                document.getElementById('categoryDisplay').innerHTML = 
+                    `Dificultad: <strong>${difficultyNames[selectedDifficulty]}</strong> - Ahora gira la ruleta!`;
+            }
+        }
+    </script>
 </body>
 </html>
-
-
