@@ -17,11 +17,15 @@ public class HomeController : Controller
     {
         return View();
     }
-    public IActionResult ConfigurarJuego()
+    public IActionResult ConfigurarJuego(string username, int dificultad, int categoria)
     {
-        ViewBag.Dificultades = BD.ObtenerDificultades();
-        ViewBag.Categorias = BD.ObtenerCategorias();
-        return View();
+        if (string.IsNullOrEmpty(nombre) || int.IsNullOrEmpty(dificultad) || int.IsNullOrEmpty(categoria))
+    {
+        ViewBag.Error = "Debés ingresar nombre, dificultad y categoría.";
+        return View("ConfigurarJuego");
+    }
+        juegoNuevo.InicializarJuego();
+        return RedirectToAction(Comenzar(username, dificultad, categoria));
     }
     public IActionResult Comenzar(string username, int dificultad, int categoria)
     {
@@ -30,17 +34,19 @@ public class HomeController : Controller
     }
     public IActionResult Jugar()
     {
-        ViewBag.preguntaActual = juegoNuevo.Algo();
-        ViewBag.listaRespuestas = juegoNuevo.Algo();
-        if (/*si hay mas preguntas va a lo de respuesta, si no dice "fin"*/)
-        {
-
+        if (BD.ObtenerPreguntas().Count() > 0) {
+            ViewBag.Pregunta = juegoNuevo.ObtenerProximaPregunta();
+            ViewBag.ListaRespuestas = ObtenerProximasRespuestas(juegoNuevo.ObtenerProximaPregunta().preguntaID); //??? 
+            return View("Juego");
         }
-        ViewBag.respuestaCorrecta = juegoNuevo.Algo(); //???        
+        else{
+            return View("Fin");
+        }
     }
-    public IActionResult Juego()
-    { // eu increible lo poco que entiendo
-        
-        return View();
+    [HttpPost]
+    public IActionResult Juego(int respuestaElegida)
+    { 
+        juegoNuevo.VerificarRespuesta();
+        return View(); //deberia returnear view respuesta pero vamos a hacer que aparezca en la misma view con javascript onclick porq binker me dijo
     }
 }

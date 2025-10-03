@@ -1,40 +1,184 @@
-@model TuProyecto.Models.Juego
-@{
-    ViewData["Title"] = "Configurar Juego";
-    // Las listas de dificultades y categorías deberían cargarse en el ViewBag desde el controller
-    var dificultades = ViewBag.Dificultades as List<Dificultad>;
-    var categorias = ViewBag.Categorias as List<Categoria>;
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Configurar Juego</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      text-align: center;
+      padding: 40px;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      color: #2c3e50;
+    }
+
+    .input-section {
+      margin-bottom: 30px;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 250px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 20px 0 10px;
+      color: #444;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .option-label {
+      padding: 12px 25px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      color: #fff;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input[type="radio"] {
+      display: none; /* escondemos los radios */
+    }
+
+    /* Estilo cuando están seleccionados */
+    input[type="radio"]:checked + .option-label {
+      box-shadow: 0 0 0 3px #2c3e50 inset;
+      transform: scale(1.05);
+    }
+
+    /* Colores */
+    .facil { background: #81c784; }
+    .medio { background: #ffb74d; }
+    .dificil { background: #e57373; }
+
+    .categoria1 { background: #64b5f6; }
+    .categoria2 { background: #ba68c8; }
+    .categoria3 { background: #4db6ac; }
+    .categoria4 { background: #f06292; }
+
+    .submit-btn {
+      margin-top: 30px;
+      padding: 14px 35px;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background: #2ecc71;
+      color: #fff;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .submit-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    /* Botón Todas */
+.todas {
+  background: #34495e;   /* gris azulado */
+  color: #fff;
+  padding: 12px 25px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-<h2>Configurar Juego</h2>
+.todas:hover {
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
 
-<form asp-action="Comenzar" method="get">
-    <div class="form-group">
-        <label for="username">Usuario</label>
-        <input type="text" id="username" name="username" class="form-control" required />
+/* Botón Geografía */
+.geografia {
+  background: #27ae60;   /* verde más intenso */
+  color: #fff;
+  padding: 12px 25px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.geografia:hover {
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+  </style>
+</head>
+<body>
+  <h1>Configurar Juego</h1>
+
+  <form action="/Juego/Configurar" method="post">
+    <!-- Nombre -->
+    <div class="input-section">
+      <label for="nombre">Ingresá tu nombre:</label><br>
+      <input type="text" id="nombre" name="nombre" required>
     </div>
 
-    <div class="form-group">
-        <label for="dificultad">Dificultad</label>
-        <select id="dificultad" name="dificultad" class="form-control" required>
-            <option value="-1">Todas</option>
-            @foreach (var d in dificultades)
-            {
-                <option value="@d.DificultadID">@d.Nombre</option>
-            }
-        </select>
+    <!-- DIFICULTADES -->
+    <div class="section-title">Dificultades</div>
+    <div class="button-row">
+      <input type="radio" id="facil" name="dificultad" value="1" required>
+      <label for="facil" class="option-label facil">Fácil</label>
+
+      <input type="radio" id="medio" name="dificultad" value="2">
+      <label for="medio" class="option-label medio">Medio</label>
+
+      <input type="radio" id="dificil" name="dificultad" value="3">
+      <label for="dificil" class="option-label dificil">Difícil</label>
+
+      <input type="radio" id="todas" name="dificultad" value="-1">
+      <label for="dificil" class="option-label dificil">Todas</label>
     </div>
 
-    <div class="form-group">
-        <label for="categoria">Categoría</label>
-        <select id="categoria" name="categoria" class="form-control" required>
-            <option value="-1">Todas</option>
-            @foreach (var c in categorias)
-            {
-                <option value="@c.CategoriaID">@c.Nombre</option>
-            }
-        </select>
+    <!-- CATEGORÍAS -->
+    <div class="section-title">Categorías</div>
+    <div class="button-row">
+      <input type="radio" id="historia" name="categoria" value="1" required>
+      <label for="historia" class="option-label categoria1">Historia</label>
+
+      <input type="radio" id="geografia" name="categoria" value="2" required>
+      <label for="geografia" class="option-label categoria2">Geografia</label>
+
+      <input type="radio" id="ciencia" name="categoria" value="3">
+      <label for="ciencia" class="option-label categoria3">Ciencia</label>
+
+      <input type="radio" id="deportes" name="categoria" value="4">
+      <label for="deportes" class="option-label categoria4">Deportes</label>
+
+      <input type="radio" id="arte" name="categoria" value="5">
+      <label for="arte" class="option-label categoria5">Arte</label>
+
+      <input type="radio" id="todo" name="categoria" value="-1">
+      <label for="todo" class="option-label categoria6">Todas</label>
     </div>
 
-    <button type="submit" class="btn btn-primary">Jugar</button>
-</form>
+    <!-- BOTÓN ENVIAR -->
+    <p>@ViewBag.Error</p>
+    <button type="submit" class="submit-btn">Comenzar</button>
+  </form>
+</body>
+</html>

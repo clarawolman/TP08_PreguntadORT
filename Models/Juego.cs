@@ -9,6 +9,8 @@ public class Juego
     public Pregunta preguntaActual { get; set; }
     public List<Pregunta> listaPreguntas { get; set; }
     public List<Respuesta> listaRespuestas { get; set; }
+    public int dificultadID { get; set; }
+    public int categoriaID { get; set; }
 
     private void InicializarJuego()
     {
@@ -16,7 +18,7 @@ public class Juego
         puntajeActual = 0;
         cantidadPreguntasCorrectas = 0;
         contadorNroPreguntaActual = 0;
-        preguntaActual = null;
+        preguntaActual = new Pregunta(0, "", 0, 0);
         listaPreguntas = null;
         listaRespuestas = null;
     }
@@ -28,13 +30,15 @@ public class Juego
     }
     public void CargarPartida(string usuario, int dificultad, int categoria) {
         username = usuario;
-        BD.ObtenerPreguntas(dificultad, categoria);
+        listaPreguntas = BD.ObtenerPreguntas(dificultad, categoria);
     }
     public void ObtenerProximaPregunta() {
         int preguntaID = preguntaActual.PreguntaID + 1;
+        int dificultadID = preguntaActual.DificultadID;
+        int categoriaID = preguntaActual.CategoriaID;
         using (SqlConnection db = new SqlConnection(_connectionString))
         {
-            string sql = "SELECT * FROM Pregunta WHERE Pregunta.IdDificultad = @dificultad and Pregunta.IdCategoria = @categoria and Pregunta.IdPregunta = @preguntaID";
+            string sql = "SELECT * FROM Pregunta WHERE Pregunta.DificultadID = @dificultadID and Pregunta.CategoriaID = @categoria and Pregunta.IdPregunta = @preguntaID";
             return db.Query<Pregunta>(sql).AsList();
         }
     }
@@ -69,7 +73,7 @@ public class Juego
         }
         contadorNroPreguntaActual++;
         preguntaActual = ObtenerProximaPregunta();
-
+        return sql;
     }
 
 }

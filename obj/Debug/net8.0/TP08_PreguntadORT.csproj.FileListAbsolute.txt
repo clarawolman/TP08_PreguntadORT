@@ -1,0 +1,9 @@
+C:\Users\49432830\Downloads\TP08_PreguntadORT\obj\Debug\net8.0\TP08_PreguntadORT.csproj.AssemblyReference.cache
+C:\Users\49432830\Downloads\TP08_PreguntadORT\obj\Debug\net8.0\TP08_PreguntadORT.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\49432830\Downloads\TP08_PreguntadORT\obj\Debug\net8.0\TP08_PreguntadORT.AssemblyInfoInputs.cache
+C:\Users\49432830\Downloads\TP08_PreguntadORT\obj\Debug\net8.0\TP08_PreguntadORT.AssemblyInfo.cs
+C:\Users\49432830\Downloads\TP08_PreguntadORT\obj\Debug\net8.0\TP08_PreguntadORT.csproj.CoreCompileInputs.cache
+C:\Users\49432830\Downloads\TP08_PreguntadORT\obj\Debug\net8.0\TP08_PreguntadORT.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\49432830\Downloads\TP08_PreguntadORT\obj\Debug\net8.0\TP08_PreguntadORT.RazorAssemblyInfo.cache
+C:\Users\49432830\Downloads\TP08_PreguntadORT\obj\Debug\net8.0\TP08_PreguntadORT.RazorAssemblyInfo.cs
+C:\Users\49432830\Downloads\TP08_PreguntadORT\obj\Debug\net8.0\TP08_PreguntadORT.sourcelink.json
