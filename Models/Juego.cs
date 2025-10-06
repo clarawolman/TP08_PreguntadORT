@@ -1,79 +1,115 @@
 using Microsoft.Data.SqlClient;
 using Dapper;
-public class Juego
+namespace TP08_PreguntadORT.Models
 {
-    public string username { get; set; }
-    public int puntajeActual { get; set; }
-    public int cantidadPreguntasCorrectas { get; set; }
-    public int contadorNroPreguntaActual { get; set; }
-    public Pregunta preguntaActual { get; set; }
-    public List<Pregunta> listaPreguntas { get; set; }
-    public List<Respuesta> listaRespuestas { get; set; }
-    public int dificultadID { get; set; }
-    public int categoriaID { get; set; }
 
-    private void InicializarJuego()
+    public class Juego
     {
-        username = null;
-        puntajeActual = 0;
-        cantidadPreguntasCorrectas = 0;
-        contadorNroPreguntaActual = 0;
-        preguntaActual = new Pregunta(0, "", 0, 0);
-        listaPreguntas = null;
-        listaRespuestas = null;
-    }
-    public List<Categoria> ObtenerCategorias() {
-        return ObtenerCategorias();
-    }
-    public List<Dificultad> ObtenerDificultades() {
-        return ObtenerDificultades();   
-    }
-    public void CargarPartida(string usuario, int dificultad, int categoria) {
-        username = usuario;
-        listaPreguntas = BD.ObtenerPreguntas(dificultad, categoria);
-    }
-    public void ObtenerProximaPregunta() {
-        int preguntaID = preguntaActual.PreguntaID + 1;
-        int dificultadID = preguntaActual.DificultadID;
-        int categoriaID = preguntaActual.CategoriaID;
-        using (SqlConnection db = new SqlConnection(_connectionString))
+        public string username { get; private set; }
+        public int puntajeActual { get; private set; }
+        public int cantidadPreguntasCorrectas { get; private set; }
+        public int contadorNroPreguntaActual { get; private set; }
+        public Pregunta preguntaActual { get; private set; }
+        public List<Pregunta> listaPreguntas { get; private set; }
+        public List<Respuesta> listaRespuestas { get; private set; }
+        public int dificultadID { get; private set; }
+        public int categoriaID { get; private set; }
+
+        public void InicializarJuego()
         {
-            string sql = "SELECT * FROM Pregunta WHERE Pregunta.DificultadID = @dificultadID and Pregunta.CategoriaID = @categoria and Pregunta.IdPregunta = @preguntaID";
-            return db.Query<Pregunta>(sql).AsList();
+            username = null;
+            puntajeActual = 0;
+            cantidadPreguntasCorrectas = 0;
+            contadorNroPreguntaActual = 0;
+            preguntaActual = new Pregunta(0, "", 0, 0);
+            listaPreguntas = null;
+            listaRespuestas = null;
         }
-    }
-    public void ObtenerProximasRespuestas(int idPregunta) {
-        using (SqlConnection db = new SqlConnection(_connectionString))
+        public List<Categoria> ObtenerCategorias()
         {
-            string sql = "SELECT * FROM Respuesta WHERE Respuesta.IdPregunta = @idPregunta";
-            return db.Query<Respuesta>(sql).AsList();
+            return BD.ObtenerCategorias();
         }
-    }
-    public bool VerificarRespuesta(int idRespuesta) {
-        using (SqlConnection db = new SqlConnection(_connectionString))
+        public List<Dificultad> ObtenerDificultades()
         {
-            bool sql = "SELECT EsCorrecta FROM Respuesta WHERE Respuesta.RespuestaId = @idRespuesta";
-            return db.Query<Respuesta>(sql);
+            return BD.ObtenerDificultades();
         }
-        if(sql)
+        public void CargarPartida(string usuario, int dificultad, int categoria)
         {
-            switch(preguntaActual.DificultadID)
+            username = usuario;
+            dificultadID = dificultad;
+            categoriaID = categoria;
+            listaPreguntas = BD.ObtenerPreguntas(dificultad, categoria);
+
+            if (listaPreguntas != null && listaPreguntas.Count > 0)
             {
-                case 1:
-                puntajeActual++;
-                break;
-                case 2:
-                puntajeActual+=2;
-                break;
-                case 3:
-                puntajeActual+=3;
-                break;
+                preguntaActual = listaPreguntas[0];
             }
-            cantidadPreguntasCorrectas++;
         }
-        contadorNroPreguntaActual++;
-        preguntaActual = ObtenerProximaPregunta();
-        return sql;
+        /*public Pregunta ObtenerProximaPregunta() {
+            int preguntaID = preguntaActual.PreguntaID + 1;
+            int dificultadID = preguntaActual.DificultadID;
+            int categoriaID = preguntaActual.CategoriaID;
+            Pregunta pregunta = BD.ObtenerProximaPregunta(preguntaID, dificultadID, categoriaID);
+            return pregunta;
+        }*/
+        public Pregunta ObtenerProximaPregunta(int dificultad, int categoria)
+        {
+            if (listaPreguntas == null || listaPreguntas.Count == 0)
+            {
+                listaPreguntas = BD.ObtenerPreguntas(dificultad, categoria);
+                if (listaPreguntas == null || listaPreguntas.Count == 0)
+                    throw new Exception("No hay preguntas cargadas.");
+            }
+
+            Pregunta proximaPregunta = null;
+
+            if (preguntaActual == null)
+            {
+                proximaPregunta = listaPreguntas[0];
+            }
+            else
+            {
+                int indiceActual = listaPreguntas.FindIndex(p => p.PreguntaID == preguntaActual.PreguntaID);
+
+                if (indiceActual >= 0 && indiceActual + 1 < listaPreguntas.Count)
+                {
+                    proximaPregunta = listaPreguntas[indiceActual + 1];
+                }
+            }
+
+            preguntaActual = proximaPregunta;
+            return proximaPregunta;
+        }
+        public List<Respuesta> ObtenerProximasRespuestas(int idPregunta)
+        {
+            List<Respuesta> respuestasProximas = BD.ObtenerProximasRespuestas(idPregunta);
+            return respuestasProximas;
+        }
+        public bool VerificarRespuesta(int idRespuesta)
+        {
+            bool esCorrecta;
+            esCorrecta = BD.VerificarRespuesta(idRespuesta);
+            if (esCorrecta)
+            {
+                switch (preguntaActual.DificultadID)
+                {
+                    case 1:
+                        puntajeActual++;
+                        break;
+                    case 2:
+                        puntajeActual += 2;
+                        break;
+                    case 3:
+                        puntajeActual += 3;
+                        break;
+                }
+                cantidadPreguntasCorrectas++;
+            }
+            contadorNroPreguntaActual++;
+            preguntaActual = ObtenerProximaPregunta(listaPreguntas[contadorNroPreguntaActual].DificultadID, listaPreguntas[contadorNroPreguntaActual].CategoriaID);
+            return esCorrecta;
+        }
+
     }
 
 }

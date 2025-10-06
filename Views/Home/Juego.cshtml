@@ -1,4 +1,4 @@
-@model TuProyecto.Models.Juego
+@model TP08_PreguntadORT.Models.Juego
 
 @{
     ViewData["Title"] = "Juego en Progreso";
@@ -71,41 +71,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        // Ejemplo simple de ruleta con Canvas
-        const categorias = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Categorias));
-        const canvas = document.getElementById("ruleta");
-        const ctx = canvas.getContext("2d");
-        const total = categorias.length;
-        const angle = (2 * Math.PI) / total;
-
-        function dibujarRuleta() {
-            for (let i = 0; i < total; i++) {
-                ctx.beginPath();
-                ctx.moveTo(150, 150);
-                ctx.arc(150, 150, 150, i * angle, (i + 1) * angle);
-                ctx.fillStyle = i % 2 === 0 ? "#f8c291" : "#82ccdd";
-                ctx.fill();
-                ctx.stroke();
-
-                ctx.save();
-                ctx.translate(150, 150);
-                ctx.rotate(i * angle + angle / 2);
-                ctx.textAlign = "right";
-                ctx.fillStyle = "#000";
-                ctx.font = "14px Arial";
-                ctx.fillText(categorias[i].Nombre, 140, 5);
-                ctx.restore();
-            }
-        }
-
-        dibujarRuleta();
-
-        document.getElementById("girarBtn").addEventListener("click", () => {
-            let giro = Math.floor(Math.random() * total);
-            alert("¡La categoría seleccionada es: " + categorias[giro].Nombre + "!");
-        });
-    </script>
-}

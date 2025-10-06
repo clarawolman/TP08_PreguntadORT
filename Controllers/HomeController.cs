@@ -17,26 +17,32 @@ public class HomeController : Controller
     {
         return View();
     }
-    public IActionResult ConfigurarJuego(string username, int dificultad, int categoria)
+
+    public IActionResult ConfigurarJuego(){
+        return View();
+    }
+    public IActionResult Configurar(string nombre, int dificultad, int categoria)
     {
-        if (string.IsNullOrEmpty(nombre) || int.IsNullOrEmpty(dificultad) || int.IsNullOrEmpty(categoria))
-    {
+        if (string.IsNullOrEmpty(nombre))
+        {
         ViewBag.Error = "Debés ingresar nombre, dificultad y categoría.";
         return View("ConfigurarJuego");
-    }
+        }
         juegoNuevo.InicializarJuego();
-        return RedirectToAction(Comenzar(username, dificultad, categoria));
+        return RedirectToAction("Comenzar", new { nombre = nombre, dificultad = dificultad, categoria = categoria });
+
     }
-    public IActionResult Comenzar(string username, int dificultad, int categoria)
+    public IActionResult Comenzar(string nombre, int dificultad, int categoria)
     {
-        juegoNuevo.CargarPartida(username, dificultad, categoria);
-        return RedirectToAction(Jugar);
+        juegoNuevo.CargarPartida(nombre, dificultad, categoria);
+        return RedirectToAction("Jugar", new { dificultad = dificultad, categoria = categoria });
+
     }
-    public IActionResult Jugar()
+    public IActionResult Jugar(int dificultad, int categoria)
     {
-        if (BD.ObtenerPreguntas().Count() > 0) {
-            ViewBag.Pregunta = juegoNuevo.ObtenerProximaPregunta();
-            ViewBag.ListaRespuestas = ObtenerProximasRespuestas(juegoNuevo.ObtenerProximaPregunta().preguntaID); //??? 
+        if (BD.ObtenerPreguntas(dificultad, categoria).Count() > 0) {
+            ViewBag.Pregunta = juegoNuevo.ObtenerProximaPregunta(dificultad, categoria);
+            ViewBag.ListaRespuestas = juegoNuevo.ObtenerProximasRespuestas(juegoNuevo.preguntaActual.PreguntaID + 1); //??? 
             return View("Juego");
         }
         else{
@@ -44,9 +50,9 @@ public class HomeController : Controller
         }
     }
     [HttpPost]
-    public IActionResult Juego(int respuestaElegida)
+    public IActionResult Juego(int respuestaElegidaID)
     { 
-        juegoNuevo.VerificarRespuesta();
-        return View(); //deberia returnear view respuesta pero vamos a hacer que aparezca en la misma view con javascript onclick porq binker me dijo
+        juegoNuevo.VerificarRespuesta(respuestaElegidaID);
+        return View(); //js
     }
 }
